@@ -1,0 +1,30 @@
+import requests
+from requests.adapters import HTTPAdapter
+from requests.adapters import DEFAULT_POOLBLOCK
+from urllib3 import PoolManager
+
+######################
+#     python 2.x     #
+######################
+
+class SourcePortAdapter(HTTPAdapter):
+    """Transport adapter" that allows us to set the source port."""
+
+    def __init__(self, port, *args, **kwargs):
+        self.poolmanager = None
+        self._source_port = port
+        HTTPAdapter.__init__(self, *args, **kwargs)
+
+    def init_poolmanager(self, connections, maxsize, block=DEFAULT_POOLBLOCK, **pool_kwargs):
+        self.poolmanager = PoolManager(
+            num_pools=connections, maxsize=maxsize,
+            block=block, source_address=('', self._source_port))
+
+s = requests.Session()
+url = "http://172.168.0.1:8080/index"
+s.mount(url, SourcePortAdapter(10001))
+web = s.get(url, headers={'Connection':'close'})  # Connection:close 解决Failed to establish a new connection 问题
+# web.encoding = 'utf-8'
+print(web.status_code)   #查看返回码
+print(web.text)          #查看网页内容
+s.close()
