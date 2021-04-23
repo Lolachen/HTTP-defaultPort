@@ -1,0 +1,838 @@
+一、主要接口
+
+1. requests.request(method, url, **kwargs) 
+
+　　构造并发送一个Request对象，返回一个Response对象。
+
+　　参数：
+
+method – 新建 Request 对象要使用的HTTP方法
+url – 新建 Request 对象的URL
+params – (可选) Request 对象的查询字符中要发送的字典或字节内容
+data – (可选) Request 对象的 body 中要包括的字典、字节或类文件数据
+json – (可选) Request 对象的 body 中要包括的 Json 数据
+headers – (可选) Request 对象的字典格式的 HTTP 头
+cookies – (可选) Request 对象的字典或 CookieJar 对象
+files – (可选) 字典，'name': file-like-objects (或{'name': ('filename', fileobj)}) 用于上传含多个部分的（类）文件对象
+auth – (可选) Auth tuple to enable Basic/Digest/Custom HTTP Auth.
+timeout (浮点或元组) – (可选) 等待服务器数据的超时限制，是一个浮点数，或是一个(connect timeout, read timeout) 元组
+allow_redirects (bool) – (可选) Boolean. True 表示允许跟踪 POST/PUT/DELETE 方法的重定向
+proxies – (可选) 字典，用于将协议映射为代理的URL
+verify – (可选) 为 True 时将会验证 SSL 证书，也可以提供一个 CA_BUNDLE 路径
+stream – (可选) 如果为 False，将会立即下载响应内容
+cert – (可选) 为字符串时应是 SSL 客户端证书文件的路径(.pem格式)，如果是元组，就应该是一个(‘cert’, ‘key’) 二元值对
+　　示例：
+
+1
+2
+3
+>>> import requests
+>>> req = requests.request('GET', 'http://httpbin.org/get')
+<Response [200]>
+　　
+
+2.  requests.head(url, **kwargs) 
+
+　　发送一个 HEAD 请求，返回一个 Response 对象
+
+　　参数：
+
+url – 新建 Request 对象的URL
+**kwargs – 见 request 方法接收的可选参数
+ 
+
+3.  requests.get(url, **kwargs) 
+
+　　发送一个 GET 请求，返回一个 Response 对象
+
+　　参数：
+
+url – 新建 Request 对象的URL
+**kwargs – 见 request 方法接收的可选参数
+ 
+
+4.  requests.post(url, data=None, **kwargs) 
+
+　　发送一个 POST 请求，返回一个 Response 对象
+
+　　参数：
+
+url – 新建 Request 对象的URL
+data – (可选) Request 对象的 body 中要包括的字典、字节或类文件数据
+**kwargs – 见 request 方法接收的可选参数
+ 
+
+5.  requests.put(url, data=None, **kwargs) 
+
+　　发送一个 PUT 请求，返回一个 Response 对象
+
+　　参数：
+
+url – 新建 Request 对象的URL
+data – (可选) Request 对象的 body 中要包括的字典、字节或类文件数据
+**kwargs – 见 request 方法接收的可选参数
+ 
+
+ 
+
+6.  requests.patch(url, data=None, **kwargs) 
+
+　　发送一个 PUT 请求，返回一个 Response 对象
+
+　　参数：
+
+url – 新建 Request 对象的URL
+data – (可选) Request 对象的 body 中要包括的字典、字节或类文件数据
+**kwargs – 见 request 方法接收的可选参数
+ 
+
+7.  requests.delete(url, **kwargs) 
+
+　　发送一个 PUT 请求，返回一个 Response 对象
+
+　　参数：
+
+url – 新建 Request 对象的URL
+**kwargs – 见 request 方法接收的可选参数
+ 
+
+二、异常
+
+ exception requests.RequestException 
+
+　　处理你的请求时出现了一个有歧义的异常 
+
+ 
+
+ exception requests.ConnectionError 
+
+　　连接异常
+
+ 
+
+ exception requests.HTTPError(*args, **kwargs) 
+
+　　HTTP 错误
+
+ 
+
+ exception requests.URLRequired 
+
+　　无效的请求 URL
+
+ 
+
+ exception requests.TooManyRedirects 
+
+　　重定向过多
+
+ 
+
+ exception requests.exceptions.ConnectTimeout(*args, **kwargs) 
+
+　　The request timed out while trying to connect to the remote server.
+
+　　Requests that produced this error are safe to retry.
+
+ 
+
+ exception requests.exceptions.ReadTimeout(*args, **kwargs) 
+
+　　The server did not send any data in the allotted amount of time.
+
+ 
+
+ exception requests.exceptions.Timeout(*args, **kwargs) 
+
+　　请求超时限制，Catching this error will catch both ConnectTimeout and ReadTimeout errors.
+
+ 
+
+ 
+
+三、Request 对象
+
+requests.Request(method=None, url=None, headers=None, files=None, data={}, params={}, auth=None, cookies=None, hooks=None)
+　　由用户创建的 Request 对象，用来准备一个 PreparedRequest 对象，后者被发给服务器
+
+　　参数：
+
+method – 要使用的 HTTP 方法
+url – 目标 URL
+headers – 字典，要发送的 HTTP header
+files – 字典，形式为{filename: fileobject}，表示要上传的多个部分
+data – the body to attach the request. If a dictionary is provided, form-encoding will take place.
+params – 字典，包含追加到 URL 后的 URL 参数
+auth – Auth 句柄或 (user, pass) 元组
+cookies – 附加到这个请求的字典或 CookieJar 对象的cookies
+hooks – dictionary of callback hooks, for internal usage.
+　　示例：
+
+1
+2
+3
+4
+>>> import requests
+>>> req = requests.Request('GET', 'http://httpbin.org/get')
+>>> req.prepare()
+<PreparedRequest [GET]>
+　　方法：
+
+　　1.  register_hook(event, hook) 
+
+　　注册一个事件钩子
+
+ 
+
+　　2.  deregister_hook(event, hook) 
+
+　　撤销一个已经注册的 hook，如果 hook 存在则返回 True，否则返回 False
+
+ 
+
+　　3.  prepare() 
+
+　　构造一个 PreparedRequest 对象用于传输，返回一个 PreparedRequest 对象
+
+ 
+
+四、PreparedRequest 对象
+
+ class requests.PreparedRequest  
+
+　　完全可变的 PreparedRequest 对象，包含将会发送给服务器的字节，由 Request 或手动创建
+
+　　示例：
+
+1
+2
+3
+4
+5
+6
+7
+8
+>>> import requests
+>>> req = requests.Request('GET', 'http://httpbin.org/get')
+>>> r = req.prepare()
+<PreparedRequest [GET]>
+ 
+>>> s = requests.Session()
+>>> s.send(r)
+<Response [200]>
+ 　　属性与方法：
+
+　　1.  body = None
+
+ 　　发送给服务器的请求 body
+
+ 
+
+　　2.  deregister_hook(event, hook) 
+
+　　撤销一个已经注册的 hook，如果 hook 存在则返回 True，否则返回 False
+
+ 
+
+　　3.  headers = None 
+
+　　由HTTP headers构成的字典　　
+
+　　
+
+　　4.  hooks = None 
+
+　　dictionary of callback hooks, 仅供内部使用
+
+ 
+
+　　5.  method = None 
+
+　　HTTP 方法
+
+ 
+
+　　6.  path_url 
+
+　　构造要使用的路径URL
+
+ 
+
+　　7.  prepare(method=None, url=None, headers=None, files=None, data=None, params=None, auth=None, cookies=None, hooks=None, json=None) 
+
+　　用给定的参数准备整个请求
+
+ 
+
+　　8.  prepare_auth(auth, url='') 
+
+　　准备给定的 HTTP 认证数据
+
+ 
+
+　　9.  prepare_body(data, files, json=None) 
+
+　　准备给定的 HTTP body 数据
+
+ 
+
+　　10.  prepare_cookies(cookies)
+
+ 　　准备给定的 HTTP cookie 数据
+
+ 
+
+　　11.  prepare_headers(headers) 
+
+　　准备给定的 HTTP headers
+
+ 
+
+　　12.  prepare_hooks(hooks) 
+
+　　准备给定的 hooks
+
+ 
+
+　　13.  prepare_method(method)
+
+ 　　准备给定的 HTTP 方法
+
+ 
+
+　　14.  prepare_url(url, params)
+
+ 　　准备给定的 HTTP URL
+
+ 
+
+　　15.  register_hook(event, hook)
+
+ 　　适当地注册一个 hook
+
+ 
+
+　　16.  url = None
+
+ 　　将请求发往的 HTTP URL
+
+ 
+
+五、Response对象
+
+ requests.Response 
+
+　　Response 对象，包含一个服务器对与 HTTP 请求的响应
+
+ 
+
+　　属性与方法：
+
+　　1.  apparent_encoding 
+
+　　The apparent encoding, provided by the lovely Charade library (Thanks, Ian!).
+
+ 
+
+　　2.  content 
+
+　　以字节表示的响应内容
+
+　　
+
+　　3.  cookies = None 
+
+　　一个服务器发回的 cookie 的 CookieJar
+
+　　
+
+　　4.  elapsed = None 
+
+　　发出请求和接收到响应之间的时间间隔 (一个 timedelta)
+
+　　
+
+　　5.  encoding = None 
+
+　　访问r.text时要以何种编码方式解码
+
+　　
+
+　　6.  headers = None 
+
+　　大小写无关的响应头组成的字典，例如： headers['content-encoding'] 将会返回 'Content-Encoding' 响应头的值
+
+ 
+
+　　7.  history = None 
+
+　　A list of Response objects from the history of the Request. Any redirect responses will end up here. The list is sorted from the oldest to the most recent request.
+
+ 
+
+　　8.  iter_content(chunk_size=1, decode_unicode=False) 
+
+　　Iterates over the response data. This avoids reading the content at once into memory for large responses. The chunk size is the number of bytes it should read into memory. This is not necessarily the length of each item returned as decoding can take place.
+
+ 
+
+　　9.  iter_lines(chunk_size=512, decode_unicode=None) 
+
+　　Iterates over the response data, one line at a time. This avoids reading the content at once into memory for large responses.
+
+ 
+
+　　10.  json(**kwargs) 
+
+　　如果存在，返回JSON格式编码的响应内容
+
+　　参数:
+
+**kwargs –  json.loads接受的可选参数
+　　
+
+　　11.  links 
+
+　　Returns the parsed header links of the response, if any.
+
+　
+
+　　12.  raise_for_status() 
+
+　　Raises stored HTTPError, if one occurred.
+
+ 
+
+　　13.  raw = None 
+
+　　File-like object representation of response (for advanced usage). Requires that ``stream=True` on the request.
+
+ 　
+
+　　14.  status_code = None 
+
+　　Integer Code of responded HTTP Status.
+
+ 　　
+
+　　15.  text 
+
+　　uncode格式的响应内容
+
+　　如果 Response.encoding 是 None 且 chardet 模块可用，将会猜测响应的编码格式
+
+ 　　
+
+　　16.  url = None 
+
+　　响应的最终URL地址
+
+ 
+
+六、Session 对象
+
+ requests.Session 
+
+　　一个 Requests 会话对象，提供 cookie 的存储，连接池和配置
+
+　　示例：
+
+1
+2
+3
+4
+>>> import requests
+>>> s = requests.Session()
+>>> s.get('http://httpbin.org/get')
+200
+ 
+
+　　属性与方法：
+
+　　1.  auth = None 
+
+　　附加到 Request 对象上的默认认证元组或对象
+
+ 
+
+　　2.  cert = None 
+
+　　SSL 证书的缺省值
+
+ 
+
+　　3.  close() 
+
+　　关闭所有的 adapters 和 session
+
+ 
+
+　　4.  delete(url, **kwargs) 
+
+　　发送一个 DELETE 请求，返回 Response 对象
+
+　　参数:
+
+url – URL for the new Request object.
+**kwargs – 可选 arguments that request takes
+ 
+
+　　5.  get(url, **kwargs) 
+
+　　发送一个 GET 请求，返回 Response 对象
+
+　　参数: 
+
+url – URL for the new Request object.
+**kwargs – 可选 arguments that request takes.
+ 
+
+　　6.  get_adapter(url) 
+
+　　返回给定URL的适当连接适配器
+
+ 
+
+　　7.  head(url, **kwargs) 
+
+　　发送一个 HEAD 请求，返回 Response 对象
+
+　　参数: 
+
+url – 新 Request 对象的URL
+**kwargs – 请求需要的可选参数
+ 
+
+　　8.  headers = None 
+
+　　一个大小写不敏感的字典，包含了这个 Session 发出的所有 Request 对象都包含的 headers
+
+ 
+
+　　9.  hooks = None 
+
+　　事件处理 hook
+
+ 
+
+　　10.  max_redirects = None 
+
+　　最大重定向次数
+
+ 
+
+　　11.  mount(prefix, adapter) 
+
+　　将一个连接适配器注册到一个前缀上
+
+ 
+
+　　12.  options(url, **kwargs) 
+
+　　发送一个 OPTIONS 请求，返回 Response 对象
+
+　　参数: 
+
+url – URL for the new Request object.
+**kwargs – 可选 arguments that request takes.
+ 
+
+　　13.  params = None 
+
+　　Dictionary of querystring data to attach to each Request. The dictionary values may be lists for representing multivalued query parameters.
+
+ 
+
+　　14.  patch(url, data=None, **kwargs) 
+
+　　发送一个 PATCH 请求，返回 Response 对象
+
+　　参数: 
+
+url – URL for the new Request object.
+data – (可选) Dictionary, bytes, or file-like object to send in the body of the Request.
+**kwargs – 可选 arguments that request takes.
+ 
+
+　　15.  post(url, data=None, **kwargs) 
+
+　　发送一个 POST 请求，返回 Response 对象
+
+　　参数: 
+
+url – URL for the new Request object.
+data – (可选) Dictionary, bytes, or file-like object to send in the body of the Request.
+**kwargs – 可选 arguments that request takes.
+ 
+
+　　16.  proxies = None 
+
+　　字典，将协议映射为每个Request使用的代理URL地址（例如： {‘http’: ‘foo.bar:3128’}) 
+
+ 
+
+　　17.  put(url, data=None, **kwargs) 
+
+　　发送一个 PUT 请求，返回 Response 对象
+
+　　参数:
+
+url – 新 Request 对象的 URL
+data – (可选) Dictionary, bytes, or file-like object to send in the body of the Request.
+**kwargs – 可选 arguments that request takes.
+ 
+
+　　18.  resolve_redirects(resp, req, stream=False, timeout=None, verify=True, cert=None, proxies=None) 
+
+　　接受一个 Response，返回一个 Responses 的 generator
+
+
+　　19.  send(request, **kwargs) 
+
+　　发送一个给定的 PreparedRequest 对象
+
+ 
+
+　　20.  stream = None 
+
+　　流式响应内容
+
+ 
+
+　　21.  trust_env = None 
+
+　　是否信任环境
+
+ 
+
+　　22.  verify = None 
+
+　　SSL 验证的默认值
+
+ 
+
+七、HTTPAdapter 
+
+ class requests.adapters.HTTPAdapter(pool_connections=10, pool_maxsize=10, max_retries=0, pool_block=False) 
+
+　　针对 urllib3 的内置 HTTP Adapter，通过实现传输适配器接口，为 session 和 HTTP、 HTTPS连接提供了一个通用的接口。该类的实例通常由内部包裹下的Session类创建。
+
+　　参数：
+
+pool_connections – 缓存的 urllib3 连接池个数
+pool_maxsize – 连接池中保存的最大连接数
+max_retries (int) – 每次连接的最大失败重试次数，只用于 DNS 查询失败，socket 连接或连接超时，默认情况下 Requests 不会重试失败的连接，如果你需要对请求重试的条件进行细粒度的控制，可以引入 urllib3 的 Retry 类
+pool_block – 连接池是否应该为连接阻塞
+　　示例：
+
+1
+2
+3
+4
+>>> import requests
+>>> s = requests.Session()
+>>> a = requests.adapters.HTTPAdapter(max_retries=3)
+>>> s.mount('http://', a)
+　　
+
+　　方法：
+
+　　1.  add_headers(request, **kwargs) 
+
+　　添加需要的 header，用户代码中不应该调用该方法，该方法应该只在 HTTPAdapter 的子类中使用
+
+　　参数： 
+
+request – 要添加 header 的 PreparedRequest 对象
+kwargs – 同于调用 send() 时的关键字参数
+ 
+
+　　2.  build_response(req, resp) 
+
+　　从一个 urllib3 响应构建一个Response对象，用户代码中不该调用该方法，该方法应该只在 HTTPAdapter 的子类中使用
+
+　　参数： 
+
+req – 用于产生响应的 PreparedRequest 对象
+resp – urllib3 响应对象
+　　
+
+　　3.  cert_verify(conn, url, verify, cert) 
+
+　　验证一个 SSL 证书，用户代码中不该调用该方法，该方法应该只在 HTTPAdapter 的子类中使用
+
+　　参数： 
+
+conn – 与证书相关的 urllib3 connection 对象
+url – 被请求的 URL.
+verify – 是否真的验证证书
+cert – 要验证的 SSL 证书
+ 
+
+　　4.  close() 
+
+　　处理掉所有的内部状态
+
+　　当前该方法仅仅关闭 PoolManager 进而断开池中的连接
+
+ 
+
+　　5.  get_connection(url, proxies=None) 
+
+　　对于给定的URL，返回一个 urllib3 连接。 用户代码中不该调用该方法，该方法应该只在 HTTPAdapter 的子类中使用
+
+　　参数： 
+
+　　url – 要连接的URL
+
+　　proxies – (可选) 一个 Requests 风格的字典，内容是此次请求使用的代理
+
+ 
+
+　　6.  init_poolmanager(connections, maxsize, block=False, **pool_kwargs) 
+
+　　初始化一个 urllib3 PoolManager 实例
+
+　　用户代码中不该调用该方法，该方法应该只在 HTTPAdapter 的子类中使用
+
+　　参数： 
+
+connections – 要缓存的 urllib3 连接池的个数
+maxsize – 连接池可容纳的最大连接数
+block – 没有可用连接时就阻塞
+pool_kwargs – 初始化 Pool Manager 的其他关键字参数
+ 
+
+　　7.  proxy_headers(proxy) 
+
+　　Returns a dictionary of the headers to add to any request sent through a proxy. This works with urllib3 magic to ensure that they are correctly sent to the proxy, rather than in a tunnelled request if CONNECT is being used.
+
+　　用户代码中不该调用该方法，该方法应该只在 HTTPAdapter 的子类中使用
+
+　　参数： 
+
+proxies – 该请求使用的代理URL
+kwargs – 可选的关键字参数
+ 
+
+　　8.  proxy_manager_for(proxy, **proxy_kwargs) 
+
+　　返回给定代理的 urllib3 ProxyManager 对象，用户代码中不该调用该方法，该方法应该只在 HTTPAdapter 的子类中使用
+
+　　参数： 
+
+proxy – 要返回 urllib3 ProxyManager 的代理
+proxy_kwargs – 用来配置Proxy Manager 的额外的关键字参数
+　　返回： 
+
+　　ProxyManager
+
+ 
+
+　　9.  request_url(request, proxies) 
+
+　　获取最后一个请求的url，如果消息是由HTTP代理发送的，则必须使用完整的URL，否则只需要使用URL的路径部分
+
+　　用户代码中不该调用该方法，该方法应该只在 HTTPAdapter 的子类中使用
+
+　　参数： 
+
+request – 要发送的 PreparedRequest 对象
+proxies – A dictionary of schemes to proxy URLs.
+ 
+
+　　10.  send(request, stream=False, timeout=None, verify=True, cert=None, proxies=None) 
+
+　　发送 PreparedRequest 对象，返回 Response 对象
+
+　　参数：
+
+request – 要发送的 PreparedRequest 对象
+stream – (可选) 是否 stream 请求的内容
+timeout (float 或 tuple) –(可选) How long to wait for the server to send data before giving up, as a float, or a (connect timeout, read timeout) tuple.
+verify – (可选) 是否验证 SSL 证书
+cert – (可选) 可信任的用户提供的 SSL 证书
+proxies – (可选) The proxies dictionary to apply to the request.
+ 
+
+八、认证
+
+ class requests.auth.AuthBase 
+
+　　所有认证的基类
+
+ 
+
+ class requests.auth.HTTPBasicAuth(username, password) 
+
+　　将 HTTP Basic Authentication 附加到给定的 Request 对象
+
+ 
+
+ class requests.auth.HTTPProxyAuth(username, password) 
+
+　　将 HTTP Proxy Authentication 附加到给定的 Request 对象
+
+ 
+
+ class requests.auth.HTTPDigestAuth(username, password) 
+
+　　将 HTTP Digest Authentication 附加到给定的 Request 对象
+
+ 
+
+九、编码
+
+ requests.utils.get_encodings_from_content(content) 
+
+　　返回给定内容的编码格式
+
+　　参数：
+
+content – 要从中提取编码格式的 bytestring
+ 
+
+ requests.utils.get_encoding_from_headers(headers) 
+
+　　根据给定的 HTTP Header 字典返回编码格式
+
+　　参数：
+
+headers – 要从中提取编码格式的字典
+ 
+
+ requests.utils.get_unicode_from_response(r) 
+
+　　以 unicode 返回响应内容
+
+　　参数：
+
+r –  要从中提取编码格式的 Response 对象
+　　尝试：
+
+content-type 里的字符集
+fall back and replace all unicode characters
+ 
+
+十、状态码查询
+
+ requests.codes() 
+
+　　查询状态码字典中对应的键/值
+
+1
+2
+3
+4
+5
+6
+7
+8
+>>> requests.codes['temporary_redirect']
+307
+ 
+>>> requests.codes.teapot
+418
+ 
+>>> requests.codes['\o/']
+200
